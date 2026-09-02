@@ -13,5 +13,8 @@ export function formatDate(date) {
 }
 
 export function dateValue(date) {
+  // convert date into a number for comparison and sorting
+  if (date instanceof Date) return date.getTime();
+  if (typeof date === "string") return new Date(date).getTime();
   return date;
 }
