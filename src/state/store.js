@@ -19,7 +19,7 @@ export function loadState(seed) {
       localStorage.setItem(KEY, JSON.stringify(initial));
       return initial;
     }
-    return JSON.parse(raw);
+    return hydrate(JSON.parse(raw));
   } catch {
     return hydrate(seed);
   }
@@ -44,13 +44,15 @@ export function reducer(state, action) {
       return { ...state, expenses: [...state.expenses, action.expense] };
     }
     case "DELETE_EXPENSE": {
-      const next = state.expenses.slice();
-      next.splice(action.index, 1);
+      // Identify expenses by ID so sorted and filtered views mutate the right record.
+      const next = state.expenses.filter((expense) => expense.id !== action.id);
       return { ...state, expenses: next };
     }
     case "UPDATE_EXPENSE": {
-      const next = state.expenses.slice();
-      next[action.index] = { ...next[action.index], ...action.patch };
+      // Identify expenses by ID so sorted and filtered views mutate the right record.
+      const next = state.expenses.map((expense) =>
+        expense.id === action.id ? { ...expense, ...action.patch } : expense
+      );
       return { ...state, expenses: next };
     }
     case "ADD_MEMBER": {

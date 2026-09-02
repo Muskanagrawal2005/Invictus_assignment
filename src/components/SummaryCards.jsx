@@ -12,7 +12,8 @@ export default function SummaryCards({ members, expenses, onAddMember }) {
         .reduce((s, e) => s + Number(e.amount), 0);
       return { id: m.id, name: m.name, paid };
     });
-  }, [expenses]);
+  // Recompute paid totals when a member is added, even before new expenses exist.
+  }, [expenses, members]);
 
   const spent = totalSpent(expenses);
 
